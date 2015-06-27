@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>Hosts</title>
+        <script type="text/javascript" src="prototype.js"></script>
+        <script type="text/javascript">
+        function loadHosts()
+        {
+            var url = "service.php?class=host&method=getList";
+            var request = new Ajax.Request(
+                url,
+                {
+                    method: 'get',
+                    requestHeaders: {Accept: 'application/json'},
+                    onSuccess: function(req) {
+                        var servers = req.responseText.evalJSON();
+                        //var servers = {"host-getlist":[{"host_id":"1","host_name":"test-one","ip_address":"192.168.1.1","username":"testuser1"},{"host_id":"2","host_name":"test-two","ip_address":"192.168.1.2","username":"testuser2"},{"host_id":"4","host_name":"test-four","ip_address":"192.168.1.4","username":"testuser3"},{"host_id":"5","host_name":"test-fiveunact","ip_address":"192.168.1.5","username":"testuser3"}]};
+                        //for (var i = 0; i < servers.length; i++) {
+                        var elmtTable = document.getElementById('host_table');
+                        var tableRows = elmtTable.getElementsByTagName('tr');
+                        var rowCount = tableRows.length;
+                        for (var x=rowCount-1; x>0; x--) {
+                           elmtTable.removeChild(tableRows[x]);
+                        }
+                        for (var i = 0; i < servers['host-getlist'].length; i++) {
+                            var tr = new Element('tr');
+                            for (var property in servers['host-getlist'][i]) {
+                                tr.appendChild(new Element('td', {}).update(servers['host-getlist'][i][property]));
+                            }
+                            $('host_table').appendChild(tr);
+                        }
+                    }
+                }
+            );
+        }
+        </script>
+        <link href="styles.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div>
+            <a href="javascript:void(0)" class="css_btn_class" onclick="javascript:loadHosts()">Load Hosts</a></p>
+        </div>
+        <div>
+            <table id="host_table" class="AutoCenter">
+               <tr>
+                   <th>ID</th>
+                   <th>Name</th>
+                   <th>IP Address</th>
+                   <th>Username</th></tr>
+            </table>            
+        </div>
+    </body>
+</html>
